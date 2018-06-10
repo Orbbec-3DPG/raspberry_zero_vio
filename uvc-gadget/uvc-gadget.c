@@ -2219,7 +2219,7 @@ int main(int argc, char *argv[])
     /*Open the IMU and ttyGS0*/
 	if(with_imu == 1)
 	{
-		ret = imu_open(&idev)
+		ret = imu_open(&idev);
 		if (idev == NULL || ret < 0)
 			return 1;
     }
@@ -2356,7 +2356,7 @@ int main(int argc, char *argv[])
         }
 
         if (FD_ISSET(udev->uvc_fd, &efds))
-            uvc_events_process(udev);
+            uvc_events_process(udev,idev);
         if (FD_ISSET(udev->uvc_fd, &dfds))
             uvc_video_process(udev);
         if (!dummy_data_gen_mode && !mjpeg_image)
