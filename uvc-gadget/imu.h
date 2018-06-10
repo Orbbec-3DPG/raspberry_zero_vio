@@ -20,13 +20,13 @@
 #define IMU_MAX_STRING 1024
 struct RawData{
     int16_t raw[3];
-    uint64_t ts;
+    uint64_t timestamp;
 };
 
 struct IMUData{
     int16_t accel[3];
     int16_t gyro[3];
-    uint64_t ts;
+    uint64_t timestamp;
     int flag;
 };
 
