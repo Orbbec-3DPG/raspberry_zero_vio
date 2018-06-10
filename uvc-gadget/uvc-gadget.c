@@ -2058,12 +2058,14 @@ static void usage(const char *argv0)
     fprintf(stderr, " -t		Streaming burst (b/w 0 and 15)\n");
     fprintf(stderr, " -u device	UVC Video Output device\n");
     fprintf(stderr, " -v device	V4L2 Video Capture device\n");
+    fprintf(stderr, " -w with IMU\n");
 }
 
 int main(int argc, char *argv[])
 {
     struct uvc_device *udev;
     struct v4l2_device *vdev;
+    struct imu_device *idev;
     struct timeval tv;
     struct v4l2_format fmt;
     char *uvc_devname = "/dev/video0";
@@ -2081,15 +2083,18 @@ int main(int argc, char *argv[])
     /* USB speed related params */
     int mult = 0;
     int burst = 0;
+    int with_imu = 0;
     enum usb_device_speed speed = USB_SPEED_SUPER; /* High-Speed */
     enum io_method uvc_io_method = IO_METHOD_USERPTR;
 
-    while ((opt = getopt(argc, argv, "bdf:hi:m:n:o:r:s:t:u:v:")) != -1) {
+    while ((opt = getopt(argc, argv, "bwdf:hi:m:n:o:r:s:t:u:v:")) != -1) {
         switch (opt) {
         case 'b':
             bulk_mode = 1;
             break;
-
+        case 'w':
+            with_imu = 1;
+            break;
         case 'd':
             dummy_data_gen_mode = 1;
             break;
@@ -2203,6 +2208,10 @@ int main(int argc, char *argv[])
         if (vdev == NULL || ret < 0)
             return 1;
     }
+
+    /*Open the IMU and ttyGS0*/
+    ret = imu_open(&idev)
+
 
     /* Open the UVC device. */
     ret = uvc_open(&udev, uvc_devname);
