@@ -2,7 +2,9 @@
 export ACCLE_DEV=iio:device0
 export GYRO_DEV=iio:device1
 
-#disable the buffer
+modprobe st_lsm6dsm_i2c
+modprobe st_lsm6dsm_spi
+echo "disable the buffer"
 echo 0 > /sys/bus/iio/devices/${ACCLE_DEV}/buffer/enable
 echo 0 > /sys/bus/iio/devices/${GYRO_DEV}/buffer/enable
 
