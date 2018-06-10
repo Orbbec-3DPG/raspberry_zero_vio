@@ -2009,6 +2009,7 @@ static void uvc_events_init(struct uvc_device *dev)
  * main
  */
 
+
 static void image_load(struct uvc_device *dev, const char *img)
 {
     int fd = -1;
@@ -2068,17 +2069,53 @@ static void usage(const char *argv0)
     fprintf(stderr, " -w with IMU\n");
 }
 
+struct uvc_device *udev=NULL;
+struct v4l2_device *vdev=NULL;
+struct imu_device *idev=NULL;
+
+void clear(int signo)   
+{  
+    printf("oops! stop!!!\n");  
+    if (vdev!=NULL) {
+        /* Stop V4L2 streaming... */
+        v4l2_stop_capturing(vdev);
+        v4l2_uninit_device(vdev);
+        v4l2_reqbufs(vdev, 0);
+        vdev->is_streaming = 0;
+    }
+
+    if (udev!=NULL)  {
+        /* ... and now UVC streaming.. */
+        uvc_video_stream(udev, 0);
+        uvc_uninit_device(udev);
+        uvc_video_reqbufs(udev, 0);
+        udev->is_streaming = 0;
+    }
+
+    if (vdev!=NULL){
+        v4l2_close(vdev);
+    }
+    if (udev!=NULL){
+     uvc_close(udev);
+    }
+	if(idev == 1)
+    
+    {
+	   imu_close(idev);
+    }
+
+    _exit(0);  
+}  
+
 int main(int argc, char *argv[])
 {
-    struct uvc_device *udev=NULL;
-    struct v4l2_device *vdev=NULL;
-    struct imu_device *idev=NULL;
+
     struct timeval tv;
     struct v4l2_format fmt;
     char *uvc_devname = "/dev/video0";
     char *v4l2_devname = "/dev/video1";
     char *mjpeg_image = NULL;
-
+     
     fd_set fdsv, fdsu;
     int ret, opt, nfds;
     int bulk_mode = 0;
@@ -2093,7 +2130,7 @@ int main(int argc, char *argv[])
     int with_imu = 0;
     enum usb_device_speed speed = USB_SPEED_SUPER; /* High-Speed */
     enum io_method uvc_io_method = IO_METHOD_USERPTR;
-
+    signal(SIGINT, Stop);  
     while ((opt = getopt(argc, argv, "bwdf:hi:m:n:o:r:s:t:u:v:")) != -1) {
         switch (opt) {
         case 'b':
