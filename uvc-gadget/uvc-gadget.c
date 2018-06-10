@@ -1896,7 +1896,7 @@ err:
     return ret;
 }
 
-static void uvc_events_process(struct uvc_device *dev)
+static void uvc_events_process(struct uvc_device *dev,struct imu_device *idev)
 {
     struct v4l2_event v4l2_event;
     struct uvc_event *uvc_event = (void *)&v4l2_event.u.data;
@@ -1936,6 +1936,10 @@ static void uvc_events_process(struct uvc_device *dev)
     case UVC_EVENT_STREAMON:
         if (!dev->bulk)
             uvc_handle_streamon_event(dev);
+			if(idev!=NULL)
+			{
+				imu_stream_on(idev);
+			}
         return;
 
     case UVC_EVENT_STREAMOFF:
@@ -1954,7 +1958,10 @@ static void uvc_events_process(struct uvc_device *dev)
             dev->is_streaming = 0;
             dev->first_buffer_queued = 0;
         }
-
+		if(idev!=NULL)
+		{
+			imu_stream_off(idev);
+		}
         return;
     }
 
@@ -2063,9 +2070,9 @@ static void usage(const char *argv0)
 
 int main(int argc, char *argv[])
 {
-    struct uvc_device *udev;
-    struct v4l2_device *vdev;
-    struct imu_device *idev;
+    struct uvc_device *udev=NULL;
+    struct v4l2_device *vdev=NULL;
+    struct imu_device *idev=NULL;
     struct timeval tv;
     struct v4l2_format fmt;
     char *uvc_devname = "/dev/video0";
@@ -2210,8 +2217,12 @@ int main(int argc, char *argv[])
     }
 
     /*Open the IMU and ttyGS0*/
-    ret = imu_open(&idev)
-
+	if(with_imu == 1)
+	{
+		ret = imu_open(&idev)
+		if (idev == NULL || ret < 0)
+			return 1;
+    }
 
     /* Open the UVC device. */
     ret = uvc_open(&udev, uvc_devname);
@@ -2373,5 +2384,9 @@ int main(int argc, char *argv[])
         v4l2_close(vdev);
 
     uvc_close(udev);
+	if(with_imu == 1)
+    {
+	   imu_close(idev);
+    }
     return 0;
 }
