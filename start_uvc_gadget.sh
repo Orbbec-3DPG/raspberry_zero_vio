@@ -1,5 +1,6 @@
 #!/bin/bash
 sleep 2s
-/home/pi/usb_gadget/config_uvc.sh
+/home/pi/vio/raspberry_zero_vio/config_imu.sh
+/home/pi/vio/raspberry_zero_vio/config_uvc.sh
 sleep 2s
-/home/pi/usb_gadget/uvc-gadget/uvc-gadget -u /dev/video1 -v /dev/video0
+/home/pi/vio/raspberry_zero_vio/uvc-gadget/uvc-gadget -u /dev/video1 -v /dev/video0 -w
