@@ -24,6 +24,8 @@
 #include <sys/time.h>
 #include <sys/types.h>
 
+#include <sys/wait.h>  
+ 
 #include <errno.h>
 #include <fcntl.h>
 #include <stdint.h>
@@ -2073,7 +2075,7 @@ struct uvc_device *udev=NULL;
 struct v4l2_device *vdev=NULL;
 struct imu_device *idev=NULL;
 
-void clear(int signo)   
+void SigIntHandler(int signo)   
 {  
     printf("oops! stop!!!\n");  
     if (vdev!=NULL) {
@@ -2099,7 +2101,7 @@ void clear(int signo)
      uvc_close(udev);
     }
 	if(idev == 1)
-    
+
     {
 	   imu_close(idev);
     }
@@ -2130,7 +2132,7 @@ int main(int argc, char *argv[])
     int with_imu = 0;
     enum usb_device_speed speed = USB_SPEED_SUPER; /* High-Speed */
     enum io_method uvc_io_method = IO_METHOD_USERPTR;
-    signal(SIGINT, Stop);  
+    signal(SIGINT, SigIntHandler);  
     while ((opt = getopt(argc, argv, "bwdf:hi:m:n:o:r:s:t:u:v:")) != -1) {
         switch (opt) {
         case 'b':
