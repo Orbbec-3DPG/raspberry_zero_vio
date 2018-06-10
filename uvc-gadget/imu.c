@@ -247,14 +247,14 @@ void *imu_read_thread(void *arg)
                         {
                             imudata.accel[i] = data.raw[i];
                         }
-                        if (data.ts == imudata.ts)
+                        if (data.timestamp == imudata.timestamp)
                         {
                             imudata.flag = 1;
                         }
                         else
                         {
                             imudata.flag = 0;
-                            imudata.ts = data.ts;
+                            imudata.timestamp = data.timestamp;
                         }
                     }
                     else if (i == 1)
@@ -263,20 +263,20 @@ void *imu_read_thread(void *arg)
                         {
                             imudata.gyro[i] = data.raw[i];
                         }
-                        if (data.ts == imudata.ts)
+                        if (data.timestamp == imudata.timestamp)
                         {
                             imudata.flag = 1;
                         }
                         else
                         {
                             imudata.flag = 0;
-                            imudata.ts = data.ts;
+                            imudata.timestamp = data.timestamp;
                         }
                     }
 
                     if (imudata.flag == 1)
                     {
-                        snprintf(send_buf, IMU_MAX_STRING, "%lld %d %d %d %d %d %d\n", imudata.ts, imudata.accel[0], imudata.accel[1], imudata.accel[2],
+                        snprintf(send_buf, IMU_MAX_STRING, "%lld %d %d %d %d %d %d\n", imudata.timestamp, imudata.accel[0], imudata.accel[1], imudata.accel[2],
                             imudata.gyro[0], imudata.gyro[1], imudata.gyro[2]);
                         write(imu->serial_fp, send_buf, strlen(send_buf));
                         memset(send_buf, 0, IMU_MAX_STRING);
