@@ -218,7 +218,7 @@ void *imu_read_thread(void *arg)
 
     while (imu->state.is_running == 1)
     {
-        printf("runnig\n");
+        
         if (imu->state.is_streaming == 1)
         {
             //poll the data
