@@ -9,7 +9,7 @@ LDFLAGS		:= -g
 
 all: uvc-gadget
 
-uvc-gadget: uvc-gadget.o
+uvc-gadget: uvc-gadget.o imu.c
 	$(CC) $(LDFLAGS) -o $@ $^
 
 clean:
