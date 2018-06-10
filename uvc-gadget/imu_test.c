@@ -1,8 +1,14 @@
 #include "imu.h"
+struct imu_device *idev;
+void SigIntHandler(int signo)   
+{  
+    imu_close(idev);
+    _exit(0);  
+}  
 
 int main()
 {
-    struct imu_device *idev;
+
     int with_imu = 1;
     int  ret=1;
     int cnt=1000000;
