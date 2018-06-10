@@ -15,8 +15,8 @@
 case "$1" in
     start):
         echo "Starting UVC Gadget "
-        sudo /home/pi/vio/raspberry_zero_vio/config_imu.sh 
-        sudo /home/pi/vio/raspberry_zero_vio/start_uvc_gadget.sh &
+
+       # sudo /home/pi/vio/raspberry_zero_vio/start_uvc_gadget.sh &
     ;;
     stop):
         echo "to"
